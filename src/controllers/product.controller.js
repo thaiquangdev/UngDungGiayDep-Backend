@@ -80,9 +80,17 @@ const createProduct = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
   try {
+    const limit = parseInt(req.query.limit) || 8; // Giới hạn số sản phẩm mỗi trang
+    const page = parseInt(req.query.page) || 1; // Trang hiện tại
+    const offset = (page - 1) * limit; // Vị trí bắt đầu
+
     const products = await productModel
       .find()
-      .populate("brand", "brandName", "category", "categoryName");
+      .limit(limit)
+      .skip(offset)
+      .populate("brand", "brandName") // Populate trường "brand"
+      .populate("category", "categoryName"); // Populate trường "category"
+
     return res.status(200).json({
       success: true,
       products,
