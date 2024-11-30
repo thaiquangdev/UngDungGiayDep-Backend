@@ -19,6 +19,7 @@
     "slugify": "^1.6.6"
   },
   "scripts": {
+    "start": "node src/server.js",
     "dev": "nodemon src/server"
   }
 }
