@@ -1,6 +1,6 @@
 const { default: slugify } = require("slugify");
 const productModel = require("../models/product.model");
-const cloudinary = require("../configs/cloudinary.config");
+const cloudinary = require("../configs/cloudinary");
 const fs = require("fs");
 
 const createProduct = async (req, res) => {
@@ -34,6 +34,7 @@ const createProduct = async (req, res) => {
     }
 
     // Tạo mới sản phẩm
+    const parsedVariants = JSON.parse(variants);
     const newProduct = new productModel({
       title,
       slug,
@@ -41,7 +42,7 @@ const createProduct = async (req, res) => {
       price,
       brand,
       category,
-      variants,
+      variants: parsedVariants,
     });
 
     // Upload ảnh lên Cloudinary

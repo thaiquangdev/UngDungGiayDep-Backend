@@ -4,22 +4,37 @@ const brandModel = require("../models/brand.model");
 const createBrand = async (req, res) => {
   try {
     const { brandName } = req.body;
-    const slug = slugify(brandName);
+
+    // Kiểm tra dữ liệu đầu vào
+    if (!brandName) {
+      return res.status(400).json({
+        success: false,
+        message: "Brand name is required",
+      });
+    }
+
+    const slug = slugify(brandName, { lower: true });
+
+    // Kiểm tra xem brandSlug đã tồn tại chưa
     const brand = await brandModel.findOne({ brandSlug: slug });
     if (brand) {
       return res.status(400).json({
         success: false,
-        message: "Brand is already",
+        message: "Brand already exists",
       });
     }
+
+    // Tạo brand mới
     const newBrand = new brandModel({
       brandName,
       brandSlug: slug,
     });
     await newBrand.save();
+
     return res.status(201).json({
       success: true,
-      message: "",
+      message: "Create brand is successful",
+      data: newBrand,
     });
   } catch (error) {
     return res.status(500).json({
