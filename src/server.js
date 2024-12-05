@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: "https://ung-dung-giay-dep-fontend.vercel.app",
+    origin: ["https://ung-dung-giay-dep-fontend.vercel.app"],
     methods: ["POST", "PUT", "PATCH", "GET", "DELETE"],
     credentials: true,
   })

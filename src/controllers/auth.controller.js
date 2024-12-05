@@ -88,9 +88,10 @@ const login = async (req, res) => {
 
     // lưu refreshToken vào cookie
     res.cookie("refreshToken", refreshToken, {
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      secure: true,
-      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
+      secure: true, // Chỉ gửi qua HTTPS
+      httpOnly: true, // Cookie chỉ sử dụng được trên server
+      sameSite: "None", // Cho phép cookie hoạt động cross-origin
     });
 
     // lưu refreshToken vào db
