@@ -10,42 +10,25 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const allowedOrigins = [
+  "https://ung-dung-giay-dep-fontend.vercel.app",
+  "https://ung-dung-giay-dep-fontend-4upkbq1ux-thaiquangdevs-projects.vercel.app",
+  "http://localhost:5173",
+];
+
 app.use(
   cors({
-    origin: "https://ung-dung-giay-dep-fontend.vercel.app",
-    methods: ["POST", "PUT", "PATCH", "GET", "DELETE"],
-    credentials: true,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true); // Cho phép truy cập
+      } else {
+        callback(new Error("Not allowed by CORS")); // Chặn truy cập nếu domain không hợp lệ
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"], // Các phương thức HTTP được phép
+    credentials: true, // Nếu bạn dùng cookie cho xác thực, đặt `true`
   })
 );
-
-app.options("*", (req, res) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    "https://ung-dung-giay-dep-fontend.vercel.app"
-  );
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET,HEAD,OPTIONS,POST,PUT,PATCH,DELETE"
-  );
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.sendStatus(204); // No Content
-});
-
-app.use((req, res, next) => {
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET,HEAD,OPTIONS,POST,PUT,PATCH,DELETE"
-  );
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  next();
-});
 
 app.use(cookieParser());
 

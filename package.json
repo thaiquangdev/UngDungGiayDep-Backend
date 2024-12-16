@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "type": "commonjs",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",

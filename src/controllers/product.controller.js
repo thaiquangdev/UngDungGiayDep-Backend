@@ -82,15 +82,52 @@ const getAllProduct = async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 8; // Giới hạn số sản phẩm mỗi trang
     const page = parseInt(req.query.page) || 1; // Trang hiện tại
-    const offset = (page - 1) * limit; // Vị trí bắt đầu
+    const skip = (page - 1) * limit; // Số lượng sản phẩm cần bỏ qua
 
+    const { sort } = req.query;
+    // Cấu hình sắp xếp mặc định
+    let sortOption = {};
+    switch (parseInt(sort)) {
+      case 1:
+        sortOption.sold = -1; // Bán chạy nhất (giảm dần)
+        break;
+      case 2:
+        sortOption.totalRating = -1; // Đánh giá cao nhất (giảm dần)
+        break;
+      case 3:
+        sortOption.createdAt = -1; // Mới nhất (giảm dần)
+        break;
+      case 4:
+        sortOption.price = 1; // Giá tăng dần
+        break;
+      case 5:
+        sortOption.price = -1; // Giá giảm dần
+        break;
+      default:
+        sortOption._id = 1; // Mặc định (id tăng dần)
+        break;
+    }
+
+    // Điều kiện lọc
+    const whereCondition = {};
+    if (req.query.name) {
+      whereCondition.title = { $regex: req.query.name, $options: "i" }; // Tìm kiếm theo tên (không phân biệt hoa thường)
+    }
+
+    if (req.query.category) {
+      whereCondition.category = req.query.category;
+    }
+
+    // Lấy danh sách sản phẩm
     const products = await productModel
-      .find()
-      .limit(limit)
-      .skip(offset)
-      .populate("brand", "brandName") // Populate trường "brand"
-      .populate("category", "categoryName"); // Populate trường "category"
+      .find(whereCondition) // Áp dụng điều kiện lọc
+      .limit(limit) // Giới hạn số lượng sản phẩm
+      .skip(skip) // Bỏ qua các sản phẩm trước đó
+      .sort(sortOption) // Sắp xếp theo điều kiện
+      .populate("brand", "brandName") // Populate trường "brand" (chỉ lấy "brandName")
+      .populate("category", "categoryName"); // Populate trường "category" (chỉ lấy "categoryName")
 
+    // Trả về kết quả
     return res.status(200).json({
       success: true,
       products,
