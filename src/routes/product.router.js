@@ -20,6 +20,7 @@ router.post(
 router.get("/get-products", getAllProduct);
 router.get("/get-product/:slug", getProductBySlug);
 router.put("/update-product/:slug", protect, updateProduct);
-router.delete("/delete-product/:slug", protect, deleteProduct);
+// router.delete("/delete-product/:slug", protect, deleteProduct);
+router.delete("/delete-product/:pid", protect, deleteProduct);
 
 module.exports = router;

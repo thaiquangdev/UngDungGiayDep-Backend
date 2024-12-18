@@ -1,4 +1,4 @@
-const { default: slugify } = require("slugify");
+const slugify = require("slugify");
 const productModel = require("../models/product.model");
 const cloudinary = require("../configs/cloudinary");
 const fs = require("fs");
@@ -240,10 +240,11 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   try {
-    const { slug } = req.params;
+    const { pid } = req.params;
 
+    console.log(pid);
     // Tìm sản phẩm cần cập nhật
-    const product = await productModel.findOne({ slug });
+    const product = await productModel.findOne({ _id: pid });
     if (!product) {
       return res.status(404).json({
         success: false,
