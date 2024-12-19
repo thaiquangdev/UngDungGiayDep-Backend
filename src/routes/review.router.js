@@ -8,6 +8,6 @@ const {
 const router = express.Router();
 
 router.post("/create-review", protect, createReview);
-router.get("/get-reviews", protect, getAllReview);
+router.get("/get-reviews/:productId", protect, getAllReview);
 
 module.exports = router;

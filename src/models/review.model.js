@@ -14,7 +14,7 @@ const reviewSchema = mongoose.Schema(
       type: String,
     },
     star: {
-      type: number,
+      type: Number,
     },
   },
   { timestamp: true }
