@@ -58,7 +58,64 @@ const changePassword = async (req, res) => {
   }
 };
 
+const editProfile = async (req, res) => {
+  try {
+    const { fullName, email, phoneNumber } = req.body;
+    const { id } = req.user;
+
+    // Kiểm tra độ dài phoneNumber
+    if (phoneNumber && phoneNumber.toString().length > 10) {
+      return res.status(400).json({
+        success: false,
+        message: "phoneNumber must be at most 10 characters",
+      });
+    }
+
+    // Tìm người dùng
+    const user = await userModel.findById(id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Kiểm tra email đã tồn tại
+    if (email && email === user.email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is already in use",
+      });
+    }
+
+    if (phoneNumber && phoneNumber === user.phoneNumber) {
+      return res.status(400).json({
+        success: false,
+        message: "PhoneNumber is already is use",
+      });
+    }
+
+    // Cập nhật thông tin người dùng
+    user.email = email || user.email;
+    user.fullName = fullName || user.fullName;
+    user.phoneNumber = phoneNumber || user.phoneNumber;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getUser,
   changePassword,
+  editProfile,
 };
